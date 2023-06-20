@@ -1,0 +1,56 @@
+{% extends "Base.html" %}
+
+{% block content %}
+
+<section class="heading bg-aqua">
+        <div class="head-container">
+            <h1><img src="img/TechTimeTable.png" alt="Logo TechTimeTable"></h1>
+            <h2>TechTimeTable</h2>
+            <h3>Votre application web de gestion<br>
+                d'emplois du temps</h3>
+            <button type="button"><a href="{% url 'Connexion' %}">Commencer</a></button>
+        </div>
+    </section>
+
+
+
+    <!-- POURQUOI TechTimeTable? -->
+    <section>
+        <div class="div-container">
+            <h2>Pourquoi utiliser TechTimeTable ?</h2>
+
+            <div class="grid-container">
+
+                <div class="grid-item">
+                    <h3>Accès instantannés</h3>
+                    <p> Inscrivez-vous ou Connectez-vous pour directement acceder à votre emplois du temps</p>
+                </div>
+
+                <div class="grid-item">
+                    <h3>Notifications instantannés</h3>
+                    <p>Recevez des Notifications instantannés en cas de mise à jour de vos emplois du temps</p>
+                </div>
+
+                <div class="grid-item">
+                    <h3>Mode hors connexion</h3>
+                    <p>Téléchargez votre emplois du temps afin d'y acceder directement sur votre appareil.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+<!--div class="card text-center">
+    <div class="card-header bg-aqua">
+    <img src="TechTimeTable.png" alt="TechTimeTable">
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Special title treatment</h5>
+      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+    <div class="card-footer text-body-secondary">
+      2 days ago
+    </div>
+  </div-->
+
+{% endblock %}
