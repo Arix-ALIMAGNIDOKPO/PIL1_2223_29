@@ -1,0 +1,115 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@500&family=Noto+Serif&family=Open+Sans&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #ffffff;
+}
+
+.login-text {
+    background-color: #f8f8f8;
+    max-width: 400px;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.login-text h1 {
+    font-size: 30px;
+    margin-bottom: 11px;
+    text-align: center;
+    color: #0d8aa7;
+}
+
+.login-text p {
+    font-size: 17px;
+    color: #000000B2;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+}
+
+.input-box {
+    margin: 10px 0;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.label {
+    font-size: 16px;
+    color: black;
+    margin-bottom: 3px;
+}
+
+.input {
+    display: flex;
+    align-items: center;
+    background-color: #F6F6F6;
+    padding: 5px;
+    border: 2px solid rgba(216, 216, 216, 1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+input {
+    border: none;
+    outline: none;
+    padding: 10px;
+    background-color: #F6F6F6;
+    flex: 1;
+}
+
+.input i {
+    color: rgba(0, 0, 0, 0.4);
+    margin-right: 5px;
+}
+
+.check span {
+    color: #000000B4;
+    font-size: 17px;
+    margin-left: 5px;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(122.33deg, #68bed1 30.62%, #1E94E9 100%);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 30px;
+    margin-top: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.extra-line {
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.extra-line a {
+    color: #0095B6;
+}
