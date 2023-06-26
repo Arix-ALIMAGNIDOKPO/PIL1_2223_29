@@ -29,11 +29,27 @@
           <h1>Connexion</h1>
           <p>Accédez à votre emploi du temps</p>
 
-          <form class="flex-c">
+          <form class="flex-c" method="POST">
+            {% csrf_token %} {% if errors %}
+            <div
+              style="
+                border: 1px solid red;
+                padding: 1.2rem;
+                color: red;
+                margin: 0.5rem 0;
+                text-align: center;
+              "
+            >
+              {% for err in errors %}
+              <p>{{ err }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
             <div class="input-box">
-              <span class="label">Identifiant</span>
+              <span class="label">Email</span>
+              
               <div class="flex-r input">
-                <input type="text" placeholder="name@abc.com" />
+                <input name="email" type="email" placeholder="name@abc.com" />
                 <i class="fa-solid fa-envelope"></i>
               </div>
             </div>
@@ -41,13 +57,16 @@
             <div class="input-box">
               <span class="label">Mot de passe</span>
               <div class="flex-r input">
-                <input type="password" placeholder="*************" />
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="*************"
+                />
                 <i class="fas fa-lock"></i>
               </div>
             </div>
-
             <div class="check">
-              <a href="#">Mot de passe oublié ?</a>
+              <a href="{% url 'reset_password' %}">Mot de passe oublié ?</a>
               <br />
               <br />
               <input type="checkbox" name="" id="" />

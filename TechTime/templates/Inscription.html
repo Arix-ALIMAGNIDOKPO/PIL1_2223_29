@@ -1,0 +1,114 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inscription</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/Inscription.css' %}"
+    />
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Inscription</h1>
+      <form id="registration-form" method="POST">
+        {% csrf_token %}
+        {% if errors %}
+        <div
+          style="
+            border: 1px solid red;
+            padding: 1.2rem;
+            color: red;
+            margin: 0.5rem 0;
+            text-align: center;
+          "
+        >
+          {% for err in errors %}
+          <p>{{ err }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div>
+          <div class="label-group">
+            <label for="student-lastname">Nom de famille :</label>
+          </div>
+          <div class="input-group">
+            <input
+              type="text"
+              id="student-lastname"
+              required
+              name="last_name"
+            />
+          </div>
+
+          <div class="label-group">
+            <label for="student-firstname">Prénom :</label>
+          </div>
+          <div class="input-group">
+            <input name="first_name" type="text" id="student-firstname" />
+          </div>
+
+          <div class="label-group">
+            <label for="student-email">Adresse email :</label>
+          </div>
+          <div class="input-group">
+            <input name="email" type="email" id="student-email" required />
+          </div>
+          <div class="label-group">
+            <label for="student-password">Mot de passe :</label>
+          </div>
+          <div class="input-group">
+            <input
+              name="password"
+              type="password"
+              id="student-password"
+              required
+            />
+          </div>
+
+          <div class="label-group">
+            <label for="student-confirm-password"
+              >Confirmez le mot de passe :</label
+            >
+          </div>
+          <div class="input-group">
+            <input
+              name="confirm_password"
+              type="password"
+              id="student-confirm-password"
+              required
+            />
+          </div>
+
+          <div class="label-group">
+            <label for="filiere">Niveau :</label>
+          </div>
+          <div class="input-group">
+            <select name="niveau" id="grade" required>
+              <option value="">-- Sélectionnez --</option>
+              {% for niveau in niveaux %}
+              <option value="{{ niveau.id }}">{{ niveau.label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div id="registration-buttons" class="button-container">
+          <button type="submit">S'inscrire</button>
+        </div>
+
+        <br />
+        <br />
+        <br />
+        <span class="extra-line">
+          <span>Vous avez dejà un compte?</span>
+          <a href="{% url 'connexion' %}">Connectez-vous</a>
+        </span>
+      </form>
+    </div>
+  </body>
+</html>
