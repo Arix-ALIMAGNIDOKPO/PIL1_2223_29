@@ -1,8 +1,8 @@
 from django.shortcuts import render, HttpResponse, redirect
-from .models import Niveau, MyUser as User, Matiere
+from .models import Niveau, MyUser as User, Matiere, Shedule
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-
+import datetime
 
 def Accueil(request):
     return render(request, 'Accueil.html')
@@ -88,8 +88,34 @@ def deconnexion(request):
 @login_required(login_url='connexion')
 def Emplois(request, pk):
     
+    errors = []
+    success = ""
     teachers = User.objects.filter(is_teacher=True)
-    matieres = Matiere.objects.all()
+    matieres = Matiere.objects.filter(niveau_id=pk)
+    
+    if request.method == "POST":
+        teacher_id = request.POST.get('teacher_id')
+        subject_id = request.POST.get('subject_id')
+        start_time = request.POST.get('start_time')
+        end_time = request.POST.get('end_time')
+        weekNum = request.POST.get('weekNum')
+        
+        if teacher_id and subject_id and pk and start_time and end_time:
+            
+            try:
+                Shedule.objects.create(
+                teacher=User.objects.get(id=teacher_id),
+                subject=Matiere.objects.get(id=subject_id),
+                start_time=start_time,
+                end_time=end_time,
+                week_num=weekNum,
+            )
+            except:
+                errors.append("Erreur lors de la création de l'emploi du temps")
+            
+            success = "Votre emploi du temps a été bien enregistré"
+        else:
+            errors.append("Veuillez bien remplir tout les champs")
     
     context = {
         'days': ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
@@ -98,6 +124,8 @@ def Emplois(request, pk):
         'level': Niveau.objects.get(id=pk),
         'teachers': teachers,
         'matieres': matieres,
+        'errors': errors,
+        'success': success,
     }
     
     return render(request, 'Emplois.html', context)

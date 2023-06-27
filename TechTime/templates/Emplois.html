@@ -20,6 +20,20 @@
 </head>
 
 <body>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path
+        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z" />
+    </symbol>
+    <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path
+        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+    </symbol>
+    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+      <path
+        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+    </symbol>
+  </svg>
   <h2 style="text-align:center"> Welcome {{ user.first_name }} {{ user.last_name }} </h3>
     <a href="{% url 'logout' %}"> Se Deconnecter </a>
     <header>
@@ -79,78 +93,110 @@
       <div class="timetable-img text-center py-3">
         <h3 class="text-decoration-underline"> Programmer l'emploi du temps de la {{ level.label }} </h3>
       </div>
-      <div class="table-responsive">
-        <table class="table table-bordered text-center">
-          <thead>
-            <tr class="bg-light-gray">
-              {% for day in days %}
-              <th class="text-uppercase"> {{ day }} </th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for hour in hours %}
-            <tr>
-              {% for day in days %}
-              <td>
-                <span data-bs-toggle="modal" data-bs-target="#addShedule{{hour|add:day}}"
-                  class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13">Dance</span>
-                <div class="margin-10px-top font-size14"> {{ hour }} </div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-                <div class="modal fade" id="addShedule{{hour|add:day}}" tabindex="-1"
-                  aria-labelledby="exampleModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <form action="" method="post">
-                      {% csrf_token %}
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel"> Emploi du temps du {{ day }} à {{ hour }} de
-                            la {{ level.label }}
-                          </h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-
-                          <div class="my-3 text-start">
-                            <label for="teacher_id" class="form-label">Professeur:</label>
-                            <select name="teacher" id="teacher_id" class="form-select form-control">
-                              <option value="default" disabled>Selectionner le nom du professeur</option>
-                              {% for t in teachers %}
-                              <option value="{{ t.id }}"> {{ t.first_name }} {{ t.last_name }} </option>
-                              {% endfor %}
-                            </select>
-                          </div>
-                          <div class="my-3 text-start">
-                            <label for="subject_id" class="form-label">Matière:</label>
-                            <select name="subject" id="subject_id" class="form-select form-control">
-                              <option value="default" disabled>Selectionner une matière</option>
-                              {% for t in matieres %}
-                              <option value="{{ t.id }}"> {{ t.label }} </option>
-                              {% endfor %}
-                            </select>
-                          </div>
-                          <div class="my-3 text-start">
-                            
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                          <button type="submit" class="btn btn-primary">Enregistrer</button>
-                        </div>
-                    </form>
+      <div class="d-flex justify-content-end mb-4">
+        <a href="javascript:void(0)" class="btn btn-primary mx-2">Télécharger</a>
+        <a href="javascript:void(0)" class="btn btn-success mx-2" data-bs-toggle="modal"
+          data-bs-target="#addShedule">Créer</a>
+        <div class="modal fade" id="addShedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <form action="" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="level_id" value="{{ level.id }}">
+              <input type="hidden" name="weekNum" id="weekId">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"> Emploi du temps de
+                    la {{ level.label }}
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="my-3 text-start">
+                    <label for="teacher_id" class="form-label">Professeur:</label>
+                    <select name="teacher_id" id="teacher_id" class="form-select form-control">
+                      <option value="default" disabled>Selectionner le nom du professeur</option>
+                      {% for t in teachers %}
+                      <option value="{{ t.id }}"> {{ t.first_name }} {{ t.last_name }} </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="my-3 text-start">
+                    <label for="subject_id" class="form-label">Matière:</label>
+                    <select name="subject_id" id="subject_id" class="form-select form-control">
+                      <option value="default" disabled>Selectionner une matière</option>
+                      {% for t in matieres %}
+                      <option value="{{ t.id }}"> {{ t.label }} </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="my-3 text-start">
+                    <label for="start_time_id" class="form-label">Date et heure de début</label>
+                    <input id="start_time_id" type="datetime-local" name="start_time" class="form-control">
+                  </div>
+                  <div class="my-3 text-start">
+                    <label for="end_time_id" class="form-label">Date et heure de fin</label>
+                    <input type="datetime-local" name="end_time" id="end_time_id" class="form-control">
                   </div>
                 </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+          </div>
+        </div>
       </div>
-      </td>
-      {% endfor %}
-      </tr>
-      {% endfor %}
-      </tbody>
+    </div>
+    </div>
+    <div class="table-responsive">
+      <div class="w-50 mx-auto">
+        {% if errors %}
+      <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
+          <use xlink:href="#exclamation-triangle-fill" />
+        </svg>
+        <div class="align-self-center">
+          {% for err in errors %}
+          <p>{{ err }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      {% if success %}
+      <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+          <use xlink:href="#check-circle-fill" />
+        </svg>
+        <div>
+          {{ success }}
+        </div>
+      </div>
+      {% endif %}
+      </div>
+      <table class="table table-bordered text-center">
+        <thead>
+          <tr class="bg-light-gray">
+            {% for day in days %}
+            <th class="text-uppercase"> {{ day }} </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for hour in hours %}
+          <tr>
+            {% for day in days %}
+            <td>
+              <span
+                class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13">Dance</span>
+              <div class="margin-10px-top font-size14"> {{ hour }} </div>
+              <div class="font-size13 text-light-gray">Ivana Wong</div>
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
       </table>
     </div>
-    </div>
-    <div class="bouton-container">
-      <a href="#" class="btn-telecharger">Télécharger</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
