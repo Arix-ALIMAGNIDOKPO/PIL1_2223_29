@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse, redirect
-from .models import Niveau, MyUser as User
+from .models import Niveau, MyUser as User, Matiere
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
@@ -86,5 +86,18 @@ def deconnexion(request):
     return redirect('accueil')
 
 @login_required(login_url='connexion')
-def Emplois(request):
-    return render(request, 'Emplois.html')
+def Emplois(request, pk):
+    
+    teachers = User.objects.filter(is_teacher=True)
+    matieres = Matiere.objects.all()
+    
+    context = {
+        'days': ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+        'hours': ["7h-10", "10h-13h", "13h-16", "16h-19h"],
+        'niveaux': Niveau.objects.all(),
+        'level': Niveau.objects.get(id=pk),
+        'teachers': teachers,
+        'matieres': matieres,
+    }
+    
+    return render(request, 'Emplois.html', context)

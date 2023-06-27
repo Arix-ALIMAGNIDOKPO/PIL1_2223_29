@@ -2,50 +2,72 @@
 
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8" />
-    <title>Mon Emplois du temps</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="{% static 'css/Emplois.css' %}" rel="stylesheet" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-  </head>
 
-  <body>
-    <h2 style="text-align:center"> Welcome {{ user.first_name }} {{ user.last_name }} </h3>
-      <a href="{% url 'logout' %}"> Se Deconnecter </a>
+<head>
+  <meta charset="utf-8" />
+  <title>Mon Emplois du temps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="{% static 'css/Emplois.css' %}" rel="stylesheet" />
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" />
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
+  <script src="{% static 'vendor/jquery/jquery.js' %}"></script>
+  <script src="{% static 'js/app.js' %}" async></script>
+  <!-- <style>
+    * {
+      color: black!important;
+    }
+  </style> -->
+</head>
+
+<body>
+  <h2 style="text-align:center"> Welcome {{ user.first_name }} {{ user.last_name }} </h3>
+    <a href="{% url 'logout' %}"> Se Deconnecter </a>
     <header>
       <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <a class="navbar-brand" href="#">
             <img src="{% static 'img/TechTimeTable.png' %}" alt="Logo" />
           </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'accueil' %}">Accueil</a>
+                <a class="nav-link text-dark fw-bold" href="{% url 'accueil' %}">Accueil</a>
               </li>
+              {% if user.is_superuser or user.is_staff %}
+              <li class="nav-item active dropdown">
+                <a class="nav-link text-dark fw-bold dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown"
+                  id="dropNiveaux">Programmer
+                  Un emploi</a>
+
+                <div class="dropdown-menu" aria-labelledby="dropNiveaux">
+                  <div class="dropdown-header">
+                    <h4>Selectionner le niveau</h4>
+                    <div class="dropdown-divider"></div>
+                  </div>
+                  <div class="list-group">
+                    {% for niveau in niveaux %}
+                    <a href="{% url 'emplois' niveau.id %}"
+                      class="list-group-item list-group-item-control dropdown-item text-dark">
+                      {{ niveau.label }}
+                    </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </li>
+              {% else %}
               <li class="nav-item active">
-                <a class="nav-link" href="#">Mon emploi du temps</a>
+                <a class="nav-link text-dark fw-bold" href="#">Mon emploi du temps</a>
+              </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link text-dark fw-bold" href="#">Historique</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#">Historique</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Parametres</a>
+                <a class="nav-link text-dark fw-bold" href="#">Parametres</a>
               </li>
             </ul>
           </div>
@@ -54,184 +76,84 @@
     </header>
 
     <div class="container">
-      <div class="timetable-img text-center">
-        <img src="img/content/timetable.png" alt />
+      <div class="timetable-img text-center py-3">
+        <h3 class="text-decoration-underline"> Programmer l'emploi du temps de la {{ level.label }} </h3>
       </div>
       <div class="table-responsive">
         <table class="table table-bordered text-center">
           <thead>
             <tr class="bg-light-gray">
-              <th class="text-uppercase">Time</th>
-              <th class="text-uppercase">Monday</th>
-              <th class="text-uppercase">Tuesday</th>
-              <th class="text-uppercase">Wednesday</th>
-              <th class="text-uppercase">Thursday</th>
-              <th class="text-uppercase">Friday</th>
-              <th class="text-uppercase">Saturday</th>
+              {% for day in days %}
+              <th class="text-uppercase"> {{ day }} </th>
+              {% endfor %}
             </tr>
           </thead>
           <tbody>
+            {% for hour in hours %}
             <tr>
-              <td class="align-middle">09:00am</td>
+              {% for day in days %}
               <td>
-                <span
-                  class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Dance</span
-                >
-                <div class="margin-10px-top font-size14">9:00-10:00</div>
+                <span data-bs-toggle="modal" data-bs-target="#addShedule{{hour|add:day}}"
+                  class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13">Dance</span>
+                <div class="margin-10px-top font-size14"> {{ hour }} </div>
                 <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-              <td>
-                <span
-                  class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Yoga</span
-                >
-                <div class="margin-10px-top font-size14">9:00-10:00</div>
-                <div class="font-size13 text-light-gray">Marta Healy</div>
-              </td>
-              <td>
-                <span
-                  class="bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Music</span
-                >
-                <div class="margin-10px-top font-size14">9:00-10:00</div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-              <td>
-                <span
-                  class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Dance</span
-                >
-                <div class="margin-10px-top font-size14">9:00-10:00</div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-              <td>
-                <span
-                  class="bg-purple padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Art</span
-                >
-                <div class="margin-10px-top font-size14">9:00-10:00</div>
-                <div class="font-size13 text-light-gray">Kate Alley</div>
-              </td>
-              <td>
-                <span
-                  class="bg-pink padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >English</span
-                >
-                <div class="margin-10px-top font-size14">9:00-10:00</div>
-                <div class="font-size13 text-light-gray">James Smith</div>
-              </td>
-            </tr>
-            <tr>
-              <td class="align-middle">10:00am</td>
-              <td>
-                <span
-                  class="bg-orange padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Gym</span
-                >
-                <div class="margin-10px-top font-size14">10:00-11:00</div>
-                <div class="font-size13 text-light-gray">David Doe</div>
-              </td>
-              <td>
-                <span
-                  class="bg-lightred padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Physics</span
-                >
-                <div class="margin-10px-top font-size14">10:00-11:00</div>
-                <div class="font-size13 text-light-gray">John Davis</div>
-              </td>
-              <td>
-                <span
-                  class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Yoga</span
-                >
-                <div class="margin-10px-top font-size14">10:00-11:00</div>
-                <div class="font-size13 text-light-gray">Marta Healy</div>
-              </td>
-              <td>
-                <span
-                  class="bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Music</span
-                >
-                <div class="margin-10px-top font-size14">10:00-11:00</div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-              <td>
-                <span
-                  class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Dance</span
-                >
-                <div class="margin-10px-top font-size14">10:00-11:00</div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-              <td>
-                <span
-                  class="bg-purple padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Art</span
-                >
-                <div class="margin-10px-top font-size14">10:00-11:00</div>
-                <div class="font-size13 text-light-gray">Kate Alley</div>
-              </td>
-            </tr>
-            <tr>
-              <td class="align-middle">11:00am</td>
-              <td>
-                <span
-                  class="bg-pink padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >English</span
-                >
-                <div class="margin-10px-top font-size14">11:00-12:00</div>
-                <div class="font-size13 text-light-gray">James Smith</div>
-              </td>
-              <td>
-                <span
-                  class="bg-orange padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Gym</span
-                >
-                <div class="margin-10px-top font-size14">11:00-12:00</div>
-                <div class="font-size13 text-light-gray">David Doe</div>
-              </td>
-              <td>
-                <span
-                  class="bg-lightred padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Physics</span
-                >
-                <div class="margin-10px-top font-size14">11:00-12:00</div>
-                <div class="font-size13 text-light-gray">John Davis</div>
-              </td>
-              <td>
-                <span
-                  class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Yoga</span
-                >
-                <div class="margin-10px-top font-size14">11:00-12:00</div>
-                <div class="font-size13 text-light-gray">Marta Healy</div>
-              </td>
-              <td>
-                <span
-                  class="bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Music</span
-                >
-                <div class="margin-10px-top font-size14">11:00-12:00</div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-              <td>
-                <span
-                  class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13"
-                  >Dance</span
-                >
-                <div class="margin-10px-top font-size14">11:00-12:00</div>
-                <div class="font-size13 text-light-gray">Ivana Wong</div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <div class="modal fade" id="addShedule{{hour|add:day}}" tabindex="-1"
+                  aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <form action="" method="post">
+                      {% csrf_token %}
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel"> Emploi du temps du {{ day }} à {{ hour }} de
+                            la {{ level.label }}
+                          </h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+
+                          <div class="my-3 text-start">
+                            <label for="teacher_id" class="form-label">Professeur:</label>
+                            <select name="teacher" id="teacher_id" class="form-select form-control">
+                              <option value="default" disabled>Selectionner le nom du professeur</option>
+                              {% for t in teachers %}
+                              <option value="{{ t.id }}"> {{ t.first_name }} {{ t.last_name }} </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <div class="my-3 text-start">
+                            <label for="subject_id" class="form-label">Matière:</label>
+                            <select name="subject" id="subject_id" class="form-select form-control">
+                              <option value="default" disabled>Selectionner une matière</option>
+                              {% for t in matieres %}
+                              <option value="{{ t.id }}"> {{ t.label }} </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <div class="my-3 text-start">
+                            
+                          </div>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                          <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        </div>
+                    </form>
+                  </div>
+                </div>
       </div>
+      </td>
+      {% endfor %}
+      </tr>
+      {% endfor %}
+      </tbody>
+      </table>
+    </div>
     </div>
     <div class="bouton-container">
       <a href="#" class="btn-telecharger">Télécharger</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-  </body>
+</body>
+
 </html>

@@ -10,6 +10,14 @@ class Niveau(models.Model):
         return self.label
 
 
+class Matiere(models.Model):
+    label = models.CharField(max_length=100)
+    niveau = models.ForeignKey(Niveau, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.label
+
+
 class MyUserManager(BaseUserManager):
     def create_user(self, email, password=None):
         """
@@ -52,10 +60,12 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=40)
     last_name = models.CharField(max_length=40)
     password = models.CharField(max_length=255)
-    niveau = models.ForeignKey(Niveau, on_delete=models.CASCADE, null=True)
+    niveau = models.ForeignKey(
+        Niveau, on_delete=models.CASCADE, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -63,3 +73,15 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Shedule(models.Model):
+    teacher = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Matiere, on_delete=models.CASCADE)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    week_num = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"emploi du temps du {start_time} au {end_time} de {subject.label}"
