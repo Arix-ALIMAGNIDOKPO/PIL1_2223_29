@@ -1,5 +1,6 @@
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
+from colorfield.fields import ColorField
 
 
 class Niveau(models.Model):
@@ -9,13 +10,44 @@ class Niveau(models.Model):
     def __str__(self):
         return self.label
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'capacity': self.capacity,
+        }
+
 
 class Matiere(models.Model):
     label = models.CharField(max_length=100)
+    bgColor = ColorField(default='#FF0000', null=True, blank=True)
     niveau = models.ForeignKey(Niveau, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.label
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'bgColor': self.bgColor,
+            'niveau': self.niveau.serialize(),
+        }
+
+
+class Classroom(models.Model):
+    label = models.CharField(max_length=100)
+    desc = models.TextField(null=True)
+
+    def __str__(self):
+        return self.label
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'label': self.label,
+            'desc': self.desc,
+        }
 
 
 class MyUserManager(BaseUserManager):
@@ -74,14 +106,26 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+        }
+
 
 class Shedule(models.Model):
     teacher = models.ForeignKey(MyUser, on_delete=models.CASCADE)
     subject = models.ForeignKey(Matiere, on_delete=models.CASCADE)
+    classroom = models.ForeignKey(
+        Classroom, on_delete=models.SET_NULL, null=True)
+    niveau = models.ForeignKey(
+        Niveau, on_delete=models.SET_NULL, null=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     week_num = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
-        return f"emploi du temps du {start_time} au {end_time} de {subject.label}"
+        return f"emploi du temps du {self.start_time} au {self.end_time} de {self.subject.label}"

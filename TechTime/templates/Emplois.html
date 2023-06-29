@@ -12,11 +12,6 @@
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.js' %}"></script>
   <script src="{% static 'vendor/jquery/jquery.js' %}"></script>
   <script src="{% static 'js/app.js' %}" async></script>
-  <!-- <style>
-    * {
-      color: black!important;
-    }
-  </style> -->
 </head>
 
 <body>
@@ -34,123 +29,144 @@
         d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
     </symbol>
   </svg>
-  <h2 style="text-align:center"> Welcome {{ user.first_name }} {{ user.last_name }} </h3>
-    <a href="{% url 'logout' %}"> Se Deconnecter </a>
-    <header>
-      <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-          <a class="navbar-brand" href="#">
-            <img src="{% static 'img/TechTimeTable.png' %}" alt="Logo" />
-          </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-                <a class="nav-link text-dark fw-bold" href="{% url 'accueil' %}">Accueil</a>
-              </li>
-              {% if user.is_superuser or user.is_staff %}
-              <li class="nav-item active dropdown">
-                <a class="nav-link text-dark fw-bold dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown"
-                  id="dropNiveaux">Programmer
-                  Un emploi</a>
-
-                <div class="dropdown-menu" aria-labelledby="dropNiveaux">
-                  <div class="dropdown-header">
-                    <h4>Selectionner le niveau</h4>
-                    <div class="dropdown-divider"></div>
-                  </div>
-                  <div class="list-group">
-                    {% for niveau in niveaux %}
-                    <a href="{% url 'emplois' niveau.id %}"
-                      class="list-group-item list-group-item-control dropdown-item text-dark">
-                      {{ niveau.label }}
-                    </a>
-                    {% endfor %}
-                  </div>
-                </div>
-              </li>
-              {% else %}
-              <li class="nav-item active">
-                <a class="nav-link text-dark fw-bold" href="#">Mon emploi du temps</a>
-              </li>
-              {% endif %}
-              <li class="nav-item">
-                <a class="nav-link text-dark fw-bold" href="#">Historique</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link text-dark fw-bold" href="#">Parametres</a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
-    </header>
-
+  <h4 style="text-align:center"> Welcome {{ user.first_name }} {{ user.last_name }} </h4>
+  <header>
     <div class="container">
-      <div class="timetable-img text-center py-3">
-        <h3 class="text-decoration-underline"> Programmer l'emploi du temps de la {{ level.label }} </h3>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+          <img src="{% static 'img/TechTimeTable.png' %}" alt="Logo" style="max-width: 200px;" />
+        </a>
+        <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between px-3" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link text-dark fw-bold" href="{% url 'accueil' %}">Accueil</a>
+            </li>
+            {% if user.is_superuser or user.is_staff %}
+            <li class="nav-item active dropdown">
+              <a class="nav-link text-dark fw-bold dropdown-toggle" aria-expanded="false" data-bs-toggle="dropdown"
+                id="dropNiveaux">Programmer
+                Un emploi</a>
+
+              <div class="dropdown-menu" aria-labelledby="dropNiveaux">
+                <div class="dropdown-header">
+                  <h4>Selectionner le niveau</h4>
+                  <div class="dropdown-divider"></div>
+                </div>
+                <div class="list-group">
+                  {% for niveau in niveaux %}
+                  <a href="{% url 'emplois' niveau.id %}"
+                    class="list-group-item list-group-item-control dropdown-item text-dark">
+                    {{ niveau.label }}
+                  </a>
+                  {% endfor %}
+                </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-dark fw-bold" href="/admin">Gérer</a>
+            </li>
+            {% else %}
+            <li class="nav-item active">
+              <a class="nav-link text-dark fw-bold" href="{% url 'emploi_student' %}">Mon emploi du temps</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+              <a class="nav-link text-dark fw-bold" href="#">Profile</a>
+            </li>
+          </ul>
+          <a href="{% url 'logout' %}" class="btn btn-danger"> Logout </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="timetable-img text-center py-3">
+      <h3 class="text-decoration-underline"> Emploi du temps de la {{ level.label }} </h3>
+    </div>
+    <div class="d-flex justify-content-between mb-4">
+      <div>
+        <select name="" id="switchWeek" class="form-select">
+          <option value="{{ current_week }}" selected disabled>Filtrer Par Semaine</option>
+          {% for w in all_week %}
+          <option value="{{ w }}"> Semaine du {{ w }} </option>
+          {% endfor %}
+        </select>
       </div>
-      <div class="d-flex justify-content-end mb-4">
-        <a href="javascript:void(0)" class="btn btn-primary mx-2">Télécharger</a>
+      <div class="d-flex">
+        <a href="javascript:void(0)" class="btn btn-primary mx-2" id="printBtn">Télécharger</a>
+        {% if user.is_superuser or user.is_staff %}
         <a href="javascript:void(0)" class="btn btn-success mx-2" data-bs-toggle="modal"
           data-bs-target="#addShedule">Créer</a>
-        <div class="modal fade" id="addShedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <form action="" method="post">
-              {% csrf_token %}
-              <input type="hidden" name="level_id" value="{{ level.id }}">
-              <input type="hidden" name="weekNum" id="weekId">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel"> Emploi du temps de
-                    la {{ level.label }}
-                  </h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        {% endif %}
+      </div>
+      <div class="modal fade" id="addShedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="level_id" value="{{ level.id }}">
+            <input type="hidden" name="weekNum" id="weekId">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Emploi du temps de
+                  la {{ level.label }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="my-3 text-start">
+                  <label for="teacher_id" class="form-label">Professeur:</label>
+                  <select name="teacher_id" id="teacher_id" class="form-select form-control">
+                    <option value="default" disabled>Selectionner le nom du professeur</option>
+                    {% for t in teachers %}
+                    <option value="{{ t.id }}"> {{ t.first_name }} {{ t.last_name }} </option>
+                    {% endfor %}
+                  </select>
                 </div>
-                <div class="modal-body">
-                  <div class="my-3 text-start">
-                    <label for="teacher_id" class="form-label">Professeur:</label>
-                    <select name="teacher_id" id="teacher_id" class="form-select form-control">
-                      <option value="default" disabled>Selectionner le nom du professeur</option>
-                      {% for t in teachers %}
-                      <option value="{{ t.id }}"> {{ t.first_name }} {{ t.last_name }} </option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  <div class="my-3 text-start">
-                    <label for="subject_id" class="form-label">Matière:</label>
-                    <select name="subject_id" id="subject_id" class="form-select form-control">
-                      <option value="default" disabled>Selectionner une matière</option>
-                      {% for t in matieres %}
-                      <option value="{{ t.id }}"> {{ t.label }} </option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  <div class="my-3 text-start">
-                    <label for="start_time_id" class="form-label">Date et heure de début</label>
-                    <input id="start_time_id" type="datetime-local" name="start_time" class="form-control">
-                  </div>
-                  <div class="my-3 text-start">
-                    <label for="end_time_id" class="form-label">Date et heure de fin</label>
-                    <input type="datetime-local" name="end_time" id="end_time_id" class="form-control">
-                  </div>
+                <div class="my-3 text-start">
+                  <label for="subject_id" class="form-label">Matière:</label>
+                  <select name="subject_id" id="subject_id" class="form-select form-control">
+                    <option value="default" disabled>Selectionner une matière</option>
+                    {% for t in matieres %}
+                    <option value="{{ t.id }}"> {{ t.label }} </option>
+                    {% endfor %}
+                  </select>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <div class="my-3 text-start">
+                  <label for="classroom_id" class="form-label">Salle de cours:</label>
+                  <select name="classroom_id" id="classroom_id" class="form-select form-control">
+                    <option value="default" disabled>Selectionner une salle de cours</option>
+                    {% for t in classrooms %}
+                    <option value="{{ t.id }}"> {{ t.label }} </option>
+                    {% endfor %}
+                  </select>
                 </div>
-            </form>
-          </div>
+                <div class="my-3 text-start">
+                  <label for="start_time_id" class="form-label">Date et heure de début</label>
+                  <input id="start_time_id" type="datetime-local" name="start_time" class="form-control">
+                </div>
+                <div class="my-3 text-start">
+                  <label for="end_time_id" class="form-label">Date et heure de fin</label>
+                  <input type="datetime-local" name="end_time" id="end_time_id" class="form-control">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+              </div>
+          </form>
         </div>
       </div>
     </div>
-    </div>
-    <div class="table-responsive">
-      <div class="w-50 mx-auto">
-        {% if errors %}
+  </div>
+  </div>
+  <div class="table-responsive container">
+    <div class="w-50 mx-auto">
+      {% if errors %}
       <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
           <use xlink:href="#exclamation-triangle-fill" />
@@ -172,34 +188,351 @@
         </div>
       </div>
       {% endif %}
-      </div>
-      <table class="table table-bordered text-center">
-        <thead>
-          <tr class="bg-light-gray">
-            {% for day in days %}
-            <th class="text-uppercase"> {{ day }} </th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for hour in hours %}
-          <tr>
-            {% for day in days %}
-            <td>
-              <span
-                class="bg-sky padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16 xs-font-size13">Dance</span>
-              <div class="margin-10px-top font-size14"> {{ hour }} </div>
-              <div class="font-size13 text-light-gray">Ivana Wong</div>
-            </td>
-            {% endfor %}
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Jours</th>
+          <th>7h-10h</th>
+          <th>10h-13h</th>
+          <th>13h-16h</th>
+          <th>16h-19h</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for day_data in timetable_data %}
+        <tr>
+          <td>{{ day_data.day_name }}</td>
+          <td>
+            {% for slot in day_data.time_slots.1 %}
+            <div class="badge" style="background-color:{{ slot.subject.bgColor }}"
+              data-bs-target="#viewSchedule1_{{ slot.id }}" data-bs-toggle="modal">
+              {{ slot.subject.label }}
+            </div>
+            <div class="modal fade" id="viewSchedule1_{{ slot.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      {{ slot.subject.label }} du {{ day_data.day_name }}
+                    </h5>
+                    <div class="d-flex justify-content-end">
+                      {% if user.is_superuser or user.is_staff %}
+                      <a href="{% url 'destroy_shedule' slot.id %}?next={% url 'emplois' level.id %}"
+                        class="btn btn-danger me-3">Supprimer</a>
+                      {% endif %}
+                      <button type="button" class="btn-close align-self-center" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+                  </div>
+                  <div class="modal-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Détails</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              Matière
+                            </td>
+                            <td> {{ slot.subject.label }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Début
+                            </td>
+                            <td> {{ slot.start_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Fin
+                            </td>
+                            <td> {{ slot.end_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Professeur
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.teacher.first_name }} {{ slot.teacher.last_name }} </p>
+                              <p> Email: {{ slot.teacher.email }} </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Salle de cours
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.classroom.label }}</p>
+                              <p> Description: {{ slot.classroom.desc }}</p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </td>
+          <td>
+            {% for slot in day_data.time_slots.2 %}
+            <div class="badge" style="background-color:{{ slot.subject.bgColor }}"
+              data-bs-target="#viewSchedule2_{{ slot.id }}" data-bs-toggle="modal">
+              {{ slot.subject.label }}
+            </div>
+            <div class="modal fade" id="viewSchedule2_{{ slot.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      {{ slot.subject.label }} du {{ day_data.day_name }}
+                    </h5>
+                    <div class="d-flex justify-content-end">
+                      {% if user.is_superuser or user.is_staff %}
+                      <a href="{% url 'destroy_shedule' slot.id %}?next={% url 'emplois' level.id %}"
+                        class="btn btn-danger me-3">Supprimer</a>
+                      {% endif %}
+                      <button type="button" class="btn-close align-self-center" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+                  </div>
+                  <div class="modal-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Détails</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              Matière
+                            </td>
+                            <td> {{ slot.subject.label }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Début
+                            </td>
+                            <td> {{ slot.start_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Fin
+                            </td>
+                            <td> {{ slot.end_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Professeur
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.teacher.first_name }} {{ slot.teacher.last_name }} </p>
+                              <p> Email: {{ slot.teacher.email }} </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Salle de cours
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.classroom.label }}</p>
+                              <p> Description: {{ slot.classroom.desc }}</p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </td>
+          <td>
+            {% for slot in day_data.time_slots.3 %}
+            <div class="badge" style="background-color:{{ slot.subject.bgColor }}"
+              data-bs-target="#viewSchedule3_{{ slot.id }}" data-bs-toggle="modal">
+              {{ slot.subject.label }}
+            </div>
+            <div class="modal fade" id="viewSchedule3_{{ slot.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      {{ slot.subject.label }} du {{ day_data.day_name }}
+                    </h5>
+                    <div class="d-flex justify-content-end">
+                      {% if user.is_superuser or user.is_staff %}
+                      <a href="{% url 'destroy_shedule' slot.id %}?next={% url 'emplois' level.id %}"
+                        class="btn btn-danger me-3">Supprimer</a>
+                      {% endif %}
+                      <button type="button" class="btn-close align-self-center" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+                  </div>
+                  <div class="modal-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Détails</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              Matière
+                            </td>
+                            <td> {{ slot.subject.label }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Début
+                            </td>
+                            <td> {{ slot.start_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Fin
+                            </td>
+                            <td> {{ slot.end_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Professeur
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.teacher.first_name }} {{ slot.teacher.last_name }} </p>
+                              <p> Email: {{ slot.teacher.email }} </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Salle de cours
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.classroom.label }}</p>
+                              <p> Description: {{ slot.classroom.desc }}</p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </td>
+          <td>
+            {% for slot in day_data.time_slots.4 %}
+            <div class="badge" style="background-color:{{ slot.subject.bgColor }}"
+              data-bs-target="#viewSchedule4_{{ slot.id }}" data-bs-toggle="modal">
+              {{ slot.subject.label }}
+            </div>
+            <div class="modal fade" id="viewSchedule4_{{ slot.id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      {{ slot.subject.label }} du {{ day_data.day_name }}
+                    </h5>
+                    <div class="d-flex justify-content-end">
+                      {% if user.is_superuser or user.is_staff %}
+                      <a href="{% url 'destroy_shedule' slot.id %}?next={% url 'emplois' level.id %}"
+                        class="btn btn-danger me-3">Supprimer</a>
+                      {% endif %}
+                      <button type="button" class="btn-close align-self-center" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                    </div>
+                  </div>
+                  <div class="modal-body">
+                    <div class="table-responsive">
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Détails</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>
+                              Matière
+                            </td>
+                            <td> {{ slot.subject.label }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Début
+                            </td>
+                            <td> {{ slot.start_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Fin
+                            </td>
+                            <td> {{ slot.end_time }} </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Professeur
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.teacher.first_name }} {{ slot.teacher.last_name }} </p>
+                              <p> Email: {{ slot.teacher.email }} </p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              Salle de cours
+                            </td>
+                            <td>
+                              <p> Nom: {{ slot.classroom.label }}</p>
+                              <p> Description: {{ slot.classroom.desc }}</p>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  </div>
 </body>
 
 </html>

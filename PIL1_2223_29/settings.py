@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
-#for email
+# for email
 from pathlib import Path
 import os
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -20,7 +20,6 @@ EMAIL_HOST_USER = 'techtimetable29@gmail.com'
 EMAIL_HOST_PASSWORD = 'arnsbnqvgypinyik'
 EMAIL_PORT = 587
 
-from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,7 +34,7 @@ SECRET_KEY = 'django-insecure-=0fi8w29cu%id_3qw^#v=mc37_2w!a!up(k#phj3$5jh_ksm-7
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+STATIC_ROOT = 'assets/'
 
 # Application definition
 
@@ -46,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'TechTime'
+    'colorfield',
+    'TechTime',
 ]
 
 MIDDLEWARE = [
@@ -95,7 +95,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = "TechTime.MyUser"
-LOGIN_URL = '/TechTimeTable/connexion/'
+LOGIN_URL = '/connexion/'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
